@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.0.1](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.0.0...v1.0.1) (2024-03-29)
+
+
+### Bug Fixes
+
+* **tests:** Get tests running ([8b4b952](https://github.com/retinacodeworks/mikrotik-go-sdk/commit/8b4b952992b581af5e7b40090b5d89a5b9e235f2))
+
 ## 1.0.0 (2024-03-29)
 
 
