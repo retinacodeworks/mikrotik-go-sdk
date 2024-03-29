@@ -14,6 +14,7 @@ type Options struct {
 	Address string
 	Headers map[string]string
 	Tls     *tls.Config
+	Debug   bool
 }
 
 type RouterOS struct {
@@ -23,6 +24,12 @@ type RouterOS struct {
 func New(opts *Options) *RouterOS {
 	client := resty.New()
 	client.SetBaseURL(opts.Address)
+	client.SetDebug(opts.Debug)
+	//client.OnBeforeRequest(func(client *resty.Client, request *resty.Request) error {
+	//	// Debug flag
+	//	fmt.Println(request.URL)
+	//	return nil
+	//})
 	client.OnAfterResponse(func(client *resty.Client, response *resty.Response) error {
 		switch response.StatusCode() {
 		case http.StatusInternalServerError:

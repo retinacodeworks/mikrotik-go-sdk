@@ -6,18 +6,18 @@ type Firewall struct {
 	Client *resty.Client
 }
 
-func (f *Firewall) Nats() Nats {
+func (f Firewall) Nats() Nats {
 	return NatsImpl{Client: f.Client}
 }
 
-func (f *Firewall) Filters() Filters {
+func (f Firewall) Filters() Filters {
 	return FiltersImpl{Client: f.Client}
 }
 
-func (f *Firewall) Mangles() Mangles {
+func (f Firewall) Mangles() Mangles {
 	return ManglesImpl{Client: f.Client}
 }
 
-func (f *Firewall) AddressLists() AddressLists {
+func (f Firewall) AddressLists() AddressLists {
 	return AddressListsImpl{Client: f.Client}
 }

@@ -9,10 +9,10 @@ type Ipv4 struct {
 	Client *resty.Client
 }
 
-func (i *Ipv4) Addresses() Addresses {
+func (i Ipv4) Addresses() Addresses {
 	return AddressesImpl{Client: i.Client}
 }
 
-func (i *Ipv4) Firewall() firewall.Firewall {
+func (i Ipv4) Firewall() firewall.Firewall {
 	return firewall.Firewall{Client: i.Client}
 }

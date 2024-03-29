@@ -8,20 +8,16 @@ import (
 )
 
 type ListInterfacesInput struct {
-	Type string `url:"type"`
+	Type string `url:"type,omitempty"`
 }
 
-type ListInterfacesOutput struct {
-	Interfaces []Interface
-}
+type ListInterfacesOutput []Interface
 
 type GetInterfaceInput struct {
 	Id string
 }
 
-type GetInterfaceOutput struct {
-	Interface Interface
-}
+type GetInterfaceOutput Interface
 
 type CreateInterfaceInput struct {
 	Disabled bool   `json:"disabled,omitempty"`
@@ -52,35 +48,36 @@ type DeleteInterfaceOutput struct {
 }
 
 type Interfaces interface {
-	ListInterfaces(input *ListInterfacesInput) (*ListInterfacesOutput, error)
+	ListInterfaces(input *ListInterfacesInput) (ListInterfacesOutput, error)
 	GetInterface(input *GetInterfaceInput) (*GetInterfaceOutput, error)
 	CreateInterface(input *CreateInterfaceInput) (*CreateInterfaceOutput, error)
 	UpdateInterface(input *UpdateInterfaceInput) (*UpdateInterfaceOutput, error)
 	DeleteInterface(input *DeleteInterfaceInput) (*DeleteInterfaceOutput, error)
 	Vlans() Vlans
+	Bridges() Bridges
 }
 
 type Interface struct {
 	Id          string `json:".id,omitempty"`
-	ActualMtu   int8   `json:"actual-mtu,omitempty"`
-	Disabled    bool   `json:"disabled,omitempty"`
-	FpRxByte    int    `json:"fp-rx-byte,omitempty"`
-	FpRxPacket  int    `json:"fp-rx-packet,omitempty"`
-	FpTxByte    int    `json:"fp-tx-byte,omitempty"`
-	FpTxPacket  int    `json:"fp-tx-packet,omitempty"`
-	LinkDowns   int    `json:"link-downs,omitempty"`
-	Mtu         int    `json:"mtu,omitempty"`
+	ActualMtu   string `json:"actual-mtu,omitempty"`
+	Disabled    string `json:"disabled,omitempty"`
+	FpRxByte    string `json:"fp-rx-byte,omitempty"`
+	FpRxPacket  string `json:"fp-rx-packet,omitempty"`
+	FpTxByte    string `json:"fp-tx-byte,omitempty"`
+	FpTxPacket  string `json:"fp-tx-packet,omitempty"`
+	LinkDowns   string `json:"link-downs,omitempty"`
+	Mtu         string `json:"mtu,omitempty"`
 	Name        string `json:"name,omitempty"`
-	Running     bool   `json:"running,omitempty"`
-	RxByte      int    `json:"rx-byte,omitempty"`
-	RxDrop      int    `json:"rx-drop,omitempty"`
-	RxError     int    `json:"rx-error,omitempty"`
-	RxPacket    int    `json:"rx-packet,omitempty"`
-	TxByte      int    `json:"tx-byte,omitempty"`
-	TxDrop      int    `json:"tx-drop,omitempty"`
-	TxError     int    `json:"tx-error,omitempty"`
-	TxPacket    int    `json:"tx-packet,omitempty"`
-	TxQueueDrop int    `json:"tx-queue-drop,omitempty"`
+	Running     string `json:"running,omitempty"`
+	RxByte      string `json:"rx-byte,omitempty"`
+	RxDrop      string `json:"rx-drop,omitempty"`
+	RxError     string `json:"rx-error,omitempty"`
+	RxPacket    string `json:"rx-packet,omitempty"`
+	TxByte      string `json:"tx-byte,omitempty"`
+	TxDrop      string `json:"tx-drop,omitempty"`
+	TxError     string `json:"tx-error,omitempty"`
+	TxPacket    string `json:"tx-packet,omitempty"`
+	TxQueueDrop string `json:"tx-queue-drop,omitempty"`
 	Type        string `json:"type,omitempty"`
 }
 
@@ -92,20 +89,24 @@ func (i InterfacesImpl) Vlans() Vlans {
 	return VlansImpl{Client: i.Client}
 }
 
-func (i InterfacesImpl) ListInterfaces(input *ListInterfacesInput) (*ListInterfacesOutput, error) {
+func (i InterfacesImpl) Bridges() Bridges {
+	return BridgesImpl{Client: i.Client}
+}
+
+func (i InterfacesImpl) ListInterfaces(input *ListInterfacesInput) (ListInterfacesOutput, error) {
 	var resp ListInterfacesOutput
 	v, _ := query.Values(input)
 	_, err := i.Client.R().
-		SetResult(resp).
+		SetResult(&resp).
 		SetQueryString(v.Encode()).
 		Get("/interface")
-	return &resp, err
+	return resp, err
 }
 
 func (i InterfacesImpl) GetInterface(input *GetInterfaceInput) (*GetInterfaceOutput, error) {
 	var resp GetInterfaceOutput
 	_, err := i.Client.R().
-		SetResult(resp).
+		SetResult(&resp).
 		Get(fmt.Sprintf("/interface/%s", input.Id))
 	return &resp, err
 }
