@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-querystring/query"
@@ -82,7 +81,7 @@ type GetFilterRuleOutput Filter
 type CreateFilterRuleInput Filter
 type CreateFilterRuleOutput Filter
 
-type UpdateFilterRuleInput struct{}
+type UpdateFilterRuleInput Filter
 type UpdateFilterRuleOutput Filter
 
 type DeleteFilterRuleInput struct {
@@ -131,7 +130,12 @@ func (n FiltersImpl) CreateFilterRule(input *CreateFilterRuleInput) (*CreateFilt
 }
 
 func (n FiltersImpl) UpdateFilterRule(input *UpdateFilterRuleInput) (*UpdateFilterRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	var res UpdateFilterRuleOutput
+	_, err := n.Client.R().
+		SetResult(&res).
+		SetBody(input).
+		Patch(fmt.Sprintf("/ip/firewall/filter/%s", input.Id))
+	return &res, err
 }
 
 func (n FiltersImpl) DeleteFilterRule(input *DeleteFilterRuleInput) (*DeleteFilterRuleOutput, error) {

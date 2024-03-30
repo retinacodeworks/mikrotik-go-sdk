@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-querystring/query"
@@ -70,13 +69,16 @@ type GetNatRuleInput struct {
 }
 type GetNatRuleOutput NatRule
 
-type CreateNatRuleInput struct{}
-type CreateNatRuleOutput struct{}
+type CreateNatRuleInput NatRule
+type CreateNatRuleOutput NatRule
 
-type UpdateNatRuleInput struct{}
-type UpdateNatRuleOutput struct{}
+type UpdateNatRuleInput NatRule
+type UpdateNatRuleOutput NatRule
 
-type DeleteNatRuleInput struct{}
+type DeleteNatRuleInput struct {
+	Id string
+}
+
 type DeleteNatRuleOutput struct{}
 
 type Nats interface {
@@ -110,13 +112,25 @@ func (n NatsImpl) GetNatRule(input *GetNatRuleInput) (*GetNatRuleOutput, error) 
 }
 
 func (n NatsImpl) CreateNatRule(input *CreateNatRuleInput) (*CreateNatRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	var res CreateNatRuleOutput
+	_, err := n.Client.R().
+		SetResult(&res).
+		SetBody(input).
+		Put("/ip/firewall/nat")
+	return &res, err
 }
 
 func (n NatsImpl) UpdateNatRule(input *UpdateNatRuleInput) (*UpdateNatRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	var res UpdateNatRuleOutput
+	_, err := n.Client.R().
+		SetResult(&res).
+		SetBody(input).
+		Patch(fmt.Sprintf("/ip/firewall/nat/%s", input.Id))
+	return &res, err
 }
 
 func (n NatsImpl) DeleteNatRule(input *DeleteNatRuleInput) (*DeleteNatRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	_, err := n.Client.R().
+		Delete(fmt.Sprintf("/ip/firewall/nat/%s", input.Id))
+	return nil, err
 }
