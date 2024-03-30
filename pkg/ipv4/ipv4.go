@@ -2,7 +2,7 @@ package ipv4
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/retinacodeworks/mikrotik-go-sdk/service/ipv4/firewall"
+	"github.com/retinacodeworks/mikrotik-go-sdk/pkg/ipv4/firewall"
 )
 
 type Ipv4 struct {

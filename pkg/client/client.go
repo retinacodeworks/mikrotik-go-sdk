@@ -4,9 +4,9 @@ import (
 	"crypto/tls"
 	"errors"
 	"github.com/go-resty/resty/v2"
-	"github.com/retinacodeworks/mikrotik-go-sdk/service/interfaces"
-	"github.com/retinacodeworks/mikrotik-go-sdk/service/ipv4"
-	"github.com/retinacodeworks/mikrotik-go-sdk/service/routing"
+	"github.com/retinacodeworks/mikrotik-go-sdk/pkg/interfaces"
+	"github.com/retinacodeworks/mikrotik-go-sdk/pkg/ipv4"
+	"github.com/retinacodeworks/mikrotik-go-sdk/pkg/routing"
 	"net/http"
 )
 
