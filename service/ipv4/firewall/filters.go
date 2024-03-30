@@ -2,10 +2,13 @@ package firewall
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-resty/resty/v2"
+	"github.com/google/go-querystring/query"
 )
 
 type Filter struct {
+	Id                      string `json:".id,omitempty"`
 	Action                  string `json:"action"`
 	AddressListTimeout      string `json:"address-list-timeout,omitempty"`
 	Chain                   string `json:"chain"`
@@ -18,7 +21,7 @@ type Filter struct {
 	ConnectionState         string `json:"connection-state,omitempty"`
 	ConnectionType          string `json:"connection-type,omitempty"`
 	Content                 string `json:"content,omitempty"`
-	Dscp                    int8   `json:"dscp,omitempty"`
+	Dscp                    string `json:"dscp,omitempty"`
 	DstAddress              string `json:"dst-address,omitempty"`
 	DstAddressList          string `json:"dst-address-list,omitempty"`
 	DstAddressType          string `json:"dst-address-type,omitempty"`
@@ -32,7 +35,7 @@ type Filter struct {
 	InBridgePortList        string `json:"in-bridge-port-list,omitempty"`
 	InInterface             string `json:"in-interface,omitempty"`
 	InInterfaceList         string `json:"in-interface-list,omitempty"`
-	IngressPriority         int8   `json:"ingress-priority,omitempty"`
+	IngressPriority         string `json:"ingress-priority,omitempty"`
 	IpsecPolicy             string `json:"ipsec-policy,omitempty"`
 	Ipv4Options             string `json:"ipv4-options,omitempty"`
 	JumpTarget              string `json:"jump-target,omitempty"`
@@ -49,10 +52,10 @@ type Filter struct {
 	PacketSize              string `json:"packet-size,omitempty"`
 	PerConnectionClassifier string `json:"per-connection-classifier,omitempty"`
 	Port                    string `json:"port,omitempty"`
-	Priority                int8   `json:"priority,omitempty"`
+	Priority                string `json:"priority,omitempty"`
 	Protocol                string `json:"protocol,omitempty"`
 	Psd                     string `json:"psd,omitempty"`
-	Random                  int8   `json:"random,omitempty"`
+	Random                  string `json:"random,omitempty"`
 	RejectWith              string `json:"reject-with,omitempty"`
 	RoutingTable            string `json:"routing-table,omitempty"`
 	RoutingMark             string `json:"routing-mark,omitempty"`
@@ -65,22 +68,27 @@ type Filter struct {
 	TcpMss                  string `json:"tcp-mss,omitempty"`
 	Time                    string `json:"time,omitempty"`
 	TlsHost                 string `json:"tls-host,omitempty"`
-	Ttl                     int8   `json:"ttl,omitempty"`
+	Ttl                     string `json:"ttl,omitempty"`
 }
 
 type ListFilterRulesInput struct{}
-type ListFilterRulesOutput struct{}
+type ListFilterRulesOutput []Filter
 
-type GetFilterRuleInput struct{}
-type GetFilterRuleOutput struct{}
+type GetFilterRuleInput struct {
+	Id string
+}
+type GetFilterRuleOutput Filter
 
-type CreateFilterRuleInput struct{}
-type CreateFilterRuleOutput struct{}
+type CreateFilterRuleInput Filter
+type CreateFilterRuleOutput Filter
 
 type UpdateFilterRuleInput struct{}
-type UpdateFilterRuleOutput struct{}
+type UpdateFilterRuleOutput Filter
 
-type DeleteFilterRuleInput struct{}
+type DeleteFilterRuleInput struct {
+	Id string
+}
+
 type DeleteFilterRuleOutput struct{}
 
 type Filters interface {
@@ -96,15 +104,30 @@ type FiltersImpl struct {
 }
 
 func (n FiltersImpl) ListFilterRules(input *ListFilterRulesInput) (*ListFilterRulesOutput, error) {
-	return nil, errors.New("not implemented")
+	var resp ListFilterRulesOutput
+	v, _ := query.Values(input)
+	_, err := n.Client.R().
+		SetResult(&resp).
+		SetQueryString(v.Encode()).
+		Get("/ip/firewall/filter")
+	return &resp, err
 }
 
 func (n FiltersImpl) GetFilterRule(input *GetFilterRuleInput) (*GetFilterRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	var resp GetFilterRuleOutput
+	_, err := n.Client.R().
+		SetResult(&resp).
+		Get(fmt.Sprintf("/ip/firewall/filter/%s", input.Id))
+	return &resp, err
 }
 
 func (n FiltersImpl) CreateFilterRule(input *CreateFilterRuleInput) (*CreateFilterRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	var res CreateFilterRuleOutput
+	_, err := n.Client.R().
+		SetResult(&res).
+		SetBody(input).
+		Put("/ip/firewall/filter")
+	return &res, err
 }
 
 func (n FiltersImpl) UpdateFilterRule(input *UpdateFilterRuleInput) (*UpdateFilterRuleOutput, error) {
@@ -112,5 +135,7 @@ func (n FiltersImpl) UpdateFilterRule(input *UpdateFilterRuleInput) (*UpdateFilt
 }
 
 func (n FiltersImpl) DeleteFilterRule(input *DeleteFilterRuleInput) (*DeleteFilterRuleOutput, error) {
-	return nil, errors.New("not implemented")
+	_, err := n.Client.R().
+		Delete(fmt.Sprintf("/ip/firewall/filter/%s", input.Id))
+	return nil, err
 }
