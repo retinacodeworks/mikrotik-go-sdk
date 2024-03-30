@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.1.1...v1.2.0) (2024-03-30)
+
+
+### Features
+
+* **pkg:** Move components under pkg, instead of top level packages ([32d6e87](https://github.com/retinacodeworks/mikrotik-go-sdk/commit/32d6e873dc946cded7ba6a5029a186e553e3e9fa))
+
 ### [1.1.1](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.1.0...v1.1.1) (2024-03-30)
 
 
