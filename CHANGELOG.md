@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.0.1...v1.1.0) (2024-03-30)
+
+
+### Features
+
+* **version:** Minimal release for operator ([2ef861d](https://github.com/retinacodeworks/mikrotik-go-sdk/commit/2ef861d44bfee98b907992133a7ee65211b4ff9b))
+
+
+### Bug Fixes
+
+* **address:** Fix address endpoint inputs / outputs ([362155e](https://github.com/retinacodeworks/mikrotik-go-sdk/commit/362155eb95f05c4853ddd815aec0480ae8b4c821))
+
 ### [1.0.1](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.0.0...v1.0.1) (2024-03-29)
 
 
