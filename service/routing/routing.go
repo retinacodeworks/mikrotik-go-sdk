@@ -9,6 +9,6 @@ type Routing struct {
 	Client *resty.Client
 }
 
-func (r *Routing) BGP() bgp.BGP {
+func (r Routing) BGP() bgp.BGP {
 	return bgp.BGP{Client: r.Client}
 }

@@ -1,23 +1,28 @@
 package bgp
 
 import (
-	"errors"
+	"fmt"
 	"github.com/go-resty/resty/v2"
+	"github.com/google/go-querystring/query"
 )
 
 type ListBGPConnectionsInput struct{}
-type ListBGPConnectionsOutput struct{}
+type ListBGPConnectionsOutput []Connection
 
-type GetBGPConnectionInput struct{}
-type GetBGPConnectionOutput struct{}
+type GetBGPConnectionInput struct {
+	Id string
+}
+type GetBGPConnectionOutput Connection
 
-type CreateBGPConnectionInput struct{}
-type CreateBGPConnectionOutput struct{}
+type CreateBGPConnectionInput Connection
+type CreateBGPConnectionOutput Connection
 
-type UpdateBGPConnectionInput struct{}
-type UpdateBGPConnectionOutput struct{}
+type UpdateBGPConnectionInput Connection
+type UpdateBGPConnectionOutput Connection
 
-type DeleteBGPConnectionInput struct{}
+type DeleteBGPConnectionInput struct {
+	Id string
+}
 type DeleteBGPConnectionOutput struct{}
 
 type Connections interface {
@@ -29,27 +34,26 @@ type Connections interface {
 }
 
 type Connection struct {
-	Name      string          `json:"name"`
-	Connect   string          `json:"connect,omitempty"`
-	Listen    string          `json:"listen,omitempty"`
-	Local     ConnectionLocal `json:"local,omitempty"`
-	TcpMd5Key string          `json:"tcp-md5-key,omitempty"`
-	Templates string          `json:"templates,omitempty"`
-}
-
-type ConnectionLocal struct {
-	Address string `json:"address,omitempty"`
-	Port    int16  `json:"port,omitempty"`
-	Role    string `json:"role,omitempty"`
-	Ttl     int8   `json:"ttl,omitempty"`
-}
-
-type ConnectionRemote struct {
-	Address   string `json:"address,omitempty"`
-	Port      int16  `json:"port,omitempty"`
-	As        int32  `json:"as,omitempty"`
-	AllowedAs string `json:"allowed-as,omitempty"`
-	Ttl       int8   `json:"ttl,omitempty"`
+	Id              string `json:".id,omitempty"`
+	As              string `json:"as,omitempty"`
+	Name            string `json:"name"`
+	AddressFamilies string `json:"address-families,omitempty"`
+	Connect         string `json:"connect,omitempty"`
+	Listen          string `json:"listen,omitempty"`
+	LocalAddress    string `json:"local.address,omitempty"`
+	LocalRole       string `json:"local.role,omitempty"`
+	LocalPort       string `json:"local.port,omitempty"`
+	LocalTtl        string `json:"local.ttl,omitempty"`
+	RemoteAddress   string `json:"remote.address,omitempty"`
+	RemotePort      string `json:"remote.port,omitempty"`
+	RemoteAs        string `json:"remote.as,omitempty"`
+	RemoteAllowedAs string `json:"remote.allowed-at,omitempty"`
+	RemoteTtl       string `json:"remote.ttl,omitempty"`
+	RoutingTable    string `json:"routing-table,omitempty"`
+	TcpMd5Key       string `json:"tcp-md5-key,omitempty"`
+	Templates       string `json:"templates,omitempty"`
+	Disabled        string `json:"disabled,omitempty"`
+	Inactive        string `json:"inactive,omitempty"`
 }
 
 type ConnectionsImpl struct {
@@ -57,21 +61,43 @@ type ConnectionsImpl struct {
 }
 
 func (c ConnectionsImpl) ListBGPConnections(input *ListBGPConnectionsInput) (*ListBGPConnectionsOutput, error) {
-	return nil, errors.New("not implemented")
+	var resp ListBGPConnectionsOutput
+	v, _ := query.Values(input)
+	_, err := c.Client.R().
+		SetResult(&resp).
+		SetQueryString(v.Encode()).
+		Get("/routing/bgp/connection")
+	return &resp, err
 }
 
 func (c ConnectionsImpl) GetBGPConnection(input *GetBGPConnectionInput) (*GetBGPConnectionOutput, error) {
-	return nil, errors.New("not implemented")
+	var resp GetBGPConnectionOutput
+	_, err := c.Client.R().
+		SetResult(&resp).
+		Get(fmt.Sprintf("/routing/bridge/connection/%s", input.Id))
+	return &resp, err
 }
 
 func (c ConnectionsImpl) CreateBGPConnection(input *CreateBGPConnectionInput) (*CreateBGPConnectionOutput, error) {
-	return nil, errors.New("not implemented")
+	var res CreateBGPConnectionOutput
+	_, err := c.Client.R().
+		SetResult(&res).
+		SetBody(input).
+		Put("/routing/bridge/connection")
+	return &res, err
 }
 
 func (c ConnectionsImpl) UpdateBGPConnection(input *UpdateBGPConnectionInput) (*UpdateBGPConnectionOutput, error) {
-	return nil, errors.New("not implemented")
+	var res UpdateBGPConnectionOutput
+	_, err := c.Client.R().
+		SetResult(&res).
+		SetBody(input).
+		Patch(fmt.Sprintf("/routing/bridge/connection/%s", input.Id))
+	return &res, err
 }
 
 func (c ConnectionsImpl) DeleteBGPConnection(input *DeleteBGPConnectionInput) (*DeleteBGPConnectionOutput, error) {
-	return nil, errors.New("not implemented")
+	_, err := c.Client.R().
+		Delete(fmt.Sprintf("/routing/bridge/connection/%s", input.Id))
+	return nil, err
 }

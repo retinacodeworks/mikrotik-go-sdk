@@ -6,14 +6,14 @@ type BGP struct {
 	Client *resty.Client
 }
 
-func (b *BGP) Connections() Connections {
+func (b BGP) Connections() Connections {
 	return ConnectionsImpl{Client: b.Client}
 }
 
-func (b *BGP) Templates() Templates {
+func (b BGP) Templates() Templates {
 	return TemplatesImpl{Client: b.Client}
 }
 
-func (b *BGP) Vpns() VPNs {
+func (b BGP) Vpns() VPNs {
 	return VPNsImpl{Client: b.Client}
 }
