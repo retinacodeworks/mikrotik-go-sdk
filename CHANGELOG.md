@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.1.1](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.1.0...v1.1.1) (2024-03-30)
+
+
+### Bug Fixes
+
+* **connection:** Fix json mapping for RemoteAllowedAs ([4ad3ac2](https://github.com/retinacodeworks/mikrotik-go-sdk/commit/4ad3ac26383f5d1d8dee806b4ceccb5b8c1a4454))
+
 ## [1.1.0](https://github.com/retinacodeworks/mikrotik-go-sdk/compare/v1.0.1...v1.1.0) (2024-03-30)
 
 
