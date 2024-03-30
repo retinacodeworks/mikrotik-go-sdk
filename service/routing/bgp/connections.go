@@ -47,7 +47,7 @@ type Connection struct {
 	RemoteAddress   string `json:"remote.address,omitempty"`
 	RemotePort      string `json:"remote.port,omitempty"`
 	RemoteAs        string `json:"remote.as,omitempty"`
-	RemoteAllowedAs string `json:"remote.allowed-at,omitempty"`
+	RemoteAllowedAs string `json:"remote.allowed-as,omitempty"`
 	RemoteTtl       string `json:"remote.ttl,omitempty"`
 	RoutingTable    string `json:"routing-table,omitempty"`
 	TcpMd5Key       string `json:"tcp-md5-key,omitempty"`
