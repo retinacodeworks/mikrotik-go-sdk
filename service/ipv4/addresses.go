@@ -14,45 +14,21 @@ type Address struct {
 }
 
 type ListAddressesInput struct{}
-type ListAddressesOutput struct {
-	Addresses []Address
-}
+type ListAddressesOutput []Address
 
 type GetAddressInput struct {
 	Id string
 }
+type GetAddressOutput Address
 
-type GetAddressOutput struct {
-	Address *Address
-}
+type CreateAddressInput Address
+type CreateAddressOutput Address
 
-type CreateAddressInput struct {
-	Address   string
-	Network   string
-	Comment   string
-	Interface string
-}
+type UpdateAddressInput Address
+type UpdateAddressOutput Address
 
-type CreateAddressOutput struct {
-	Address *Address
-}
-
-type UpdateAddressInput struct {
-	Id        string
-	Address   string
-	Network   string
-	Comment   string
-	Interface string
-}
-type UpdateAddressOutput struct {
-	Address *Address
-}
-
-type DeleteAddressInput struct {
-	Id string
-}
-
-type DeleteAddressOutput struct{}
+type DeleteAddressInput Address
+type DeleteAddressOutput Address
 
 type Addresses interface {
 	ListAddresses(input *ListAddressesInput) (*ListAddressesOutput, error)
@@ -67,34 +43,23 @@ type AddressesImpl struct {
 }
 
 func (a AddressesImpl) ListAddresses(input *ListAddressesInput) (*ListAddressesOutput, error) {
-	var res []Address
+	var res ListAddressesOutput
 	_, err := a.Client.R().
 		SetResult(&res).
 		Get("/ip/address")
-	if err != nil {
-		return nil, err
-	}
-	return &ListAddressesOutput{Addresses: res}, nil
+	return &res, err
 }
 
 func (a AddressesImpl) GetAddress(input *GetAddressInput) (*GetAddressOutput, error) {
-	var res Address
+	var res GetAddressOutput
 	_, err := a.Client.R().
 		SetResult(&res).
 		Get(fmt.Sprintf("/ip/address/%s", input.Id))
-	if err != nil {
-		return nil, err
-	}
-	return &GetAddressOutput{Address: &res}, nil
+	return &res, err
 }
 
-//	curl -k -u admin: -X PUT https://10.155.101.214/rest/ip/address \
-//	 --data '{"address": "192.168.111.111", "interface": "dummy"}' -H "content-type: application/json"
-//
-// {".id":"*A","actual-interface":"dummy","address":"192.168.111.111/32","disabled":"false",
-// "dynamic":"false","interface":"dummy","invalid":"false","network":"192.168.111.111"}
 func (a AddressesImpl) CreateAddress(input *CreateAddressInput) (*CreateAddressOutput, error) {
-	var res Address
+	var res CreateAddressOutput
 	_, err := a.Client.R().
 		SetResult(&res).
 		SetBody(Address{
@@ -104,14 +69,11 @@ func (a AddressesImpl) CreateAddress(input *CreateAddressInput) (*CreateAddressO
 			Network:   input.Network,
 		}).
 		Put("/ip/address")
-	if err != nil {
-		return nil, err
-	}
-	return &CreateAddressOutput{Address: &res}, nil
+	return &res, err
 }
 
 func (a AddressesImpl) UpdateAddress(input *UpdateAddressInput) (*UpdateAddressOutput, error) {
-	var res Address
+	var res UpdateAddressOutput
 	_, err := a.Client.R().
 		SetResult(&res).
 		SetBody(Address{
@@ -121,17 +83,11 @@ func (a AddressesImpl) UpdateAddress(input *UpdateAddressInput) (*UpdateAddressO
 			Network:   input.Network,
 		}).
 		Patch(fmt.Sprintf("/ip/address/%s", input.Id))
-	if err != nil {
-		return nil, err
-	}
-	return &UpdateAddressOutput{Address: &res}, nil
+	return &res, err
 }
 
 func (a AddressesImpl) DeleteAddress(input *DeleteAddressInput) (*DeleteAddressOutput, error) {
 	_, err := a.Client.R().
 		Delete(fmt.Sprintf("/ip/address/%s", input.Id))
-	if err != nil {
-		return nil, err
-	}
-	return nil, nil
+	return nil, err
 }
